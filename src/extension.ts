@@ -6,7 +6,7 @@ import * as vscode from "vscode";
 
 type items = vscode.QuickPickItem & { isProject: boolean; path: string };
 
-async function showFolders(folderPath: string): Promise<items[]> {
+async function getFolders(folderPath: string): Promise<items[]> {
     const folders = await fs.readdir(path.join(folderPath));
     const folderContent = await Promise.all(
         folders.map(folderName => fs.readdir(path.join(folderPath, folderName)))
@@ -23,22 +23,31 @@ async function showFolders(folderPath: string): Promise<items[]> {
     });
 }
 
+async function showFolders(folders: items[]) {
+    const folder = await vscode.window.showQuickPick(folders, {
+        placeHolder: "choose your folder",
+    });
+
+    if (typeof folder === "undefined") return;
+
+    // vscode.workspace.updateWorkspaceFolders(0, null, { uri: vscode.Uri.file(folder.path) });
+    if (folder.isProject) {
+        vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(folder.path), {
+            forceReuseWindow: true,
+        });
+    } else {
+        const childrenFolders = await getFolders(folder.path);
+        showFolders(childrenFolders);
+    }
+}
+
 export async function activate(context: vscode.ExtensionContext) {
-    const rootFolders = await showFolders("/home/beon/dev/projects");
+    const rootFolders = await getFolders("/home/beon/dev");
 
     let disposable = vscode.commands.registerCommand(
         "quick-open-folder.quickOpenFolder",
         async () => {
-            const folder = await vscode.window.showQuickPick(rootFolders, {
-                placeHolder: "choose your folder",
-            });
-
-            if (typeof folder === "undefined") return;
-
-            // vscode.workspace.updateWorkspaceFolders(0, null, { uri: vscode.Uri.file(folder.path) });
-            vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(folder.path), {
-                forceReuseWindow: true,
-            });
+            await showFolders(rootFolders);
         }
     );
 
