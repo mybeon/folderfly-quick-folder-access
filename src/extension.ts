@@ -1,25 +1,48 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as fs from "fs/promises";
+import * as path from "path";
+import * as vscode from "vscode";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+type items = vscode.QuickPickItem & { isProject: boolean; path: string };
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "quick-open-folder" is now active!');
+async function showFolders(folderPath: string): Promise<items[]> {
+    const folders = await fs.readdir(path.join(folderPath));
+    const folderContent = await Promise.all(
+        folders.map(folderName => fs.readdir(path.join(folderPath, folderName)))
+    );
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('quick-open-folder.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Quick Open Folder!');
-	});
+    return folders.map((folder, index) => {
+        const isProject = folderContent[index].includes(".git");
+        return {
+            label: folder,
+            iconPath: isProject ? new vscode.ThemeIcon("source-control") : vscode.ThemeIcon.Folder,
+            path: path.join(folderPath, folder),
+            isProject,
+        };
+    });
+}
 
-	context.subscriptions.push(disposable);
+export async function activate(context: vscode.ExtensionContext) {
+    const rootFolders = await showFolders("/home/beon/dev/projects");
+
+    let disposable = vscode.commands.registerCommand(
+        "quick-open-folder.quickOpenFolder",
+        async () => {
+            const folder = await vscode.window.showQuickPick(rootFolders, {
+                placeHolder: "choose your folder",
+            });
+
+            if (typeof folder === "undefined") return;
+
+            // vscode.workspace.updateWorkspaceFolders(0, null, { uri: vscode.Uri.file(folder.path) });
+            vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(folder.path), {
+                forceReuseWindow: true,
+            });
+        }
+    );
+
+    context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
