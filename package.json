@@ -9,9 +9,21 @@
     "categories": [
         "Other"
     ],
-    "activationEvents": [],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
     "main": "./out/extension.js",
     "contributes": {
+        "configuration": {
+            "title": "Quick Open Folder",
+            "properties": {
+                "quickOpenFolder.required.folderPath": {
+                    "title": "Folder path",
+                    "type": "string",
+                    "description": "go to the folder containing your project and copy its absolute path"
+                }
+            }
+        },
         "commands": [
             {
                 "command": "quick-open-folder.quickOpenFolder",

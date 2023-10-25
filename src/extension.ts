@@ -51,13 +51,51 @@ async function showFolders(folders: Items[]) {
     }
 }
 
+async function getDefaultFolderPath(): Promise<string | undefined> {
+    return await vscode.workspace.getConfiguration("quickOpenFolder.required").get("folderPath");
+}
+
 export async function activate(context: vscode.ExtensionContext) {
-    const rootFolders = await getFolders("/home/beon/dev");
+    const defaultFolderPath = await getDefaultFolderPath();
+
+    let rootFolders: Items[] = [];
+
+    vscode.workspace.onDidChangeConfiguration(async event => {
+        const affected = event.affectsConfiguration("quickOpenFolder.required.folderPath");
+
+        if (affected) {
+            const updatedDefaultFolderPath = await getDefaultFolderPath();
+
+            if (typeof updatedDefaultFolderPath === "string") {
+                rootFolders = await getFolders(updatedDefaultFolderPath);
+            }
+        }
+    });
+
+    if (typeof defaultFolderPath === "string") {
+        rootFolders = await getFolders(defaultFolderPath);
+    }
 
     let disposable = vscode.commands.registerCommand(
         "quick-open-folder.quickOpenFolder",
         async () => {
-            await showFolders(rootFolders);
+            if (rootFolders.length > 0) {
+                await showFolders(rootFolders);
+            } else {
+                vscode.window
+                    .showInformationMessage(
+                        "You have to configure the default path to a valid path",
+                        "go to settings"
+                    )
+                    .then(selection => {
+                        if (selection === "go to settings") {
+                            vscode.commands.executeCommand(
+                                "workbench.action.openSettings",
+                                "quickOpenFolder.required.folderPath"
+                            );
+                        }
+                    });
+            }
         }
     );
 
