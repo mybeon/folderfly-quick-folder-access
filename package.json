@@ -20,7 +20,8 @@
                 "quickOpenFolder.required.folderPath": {
                     "title": "Folder path",
                     "type": "string",
-                    "description": "go to the folder containing your project and copy its absolute path"
+                    "description": "go to the folder containing your project and copy its absolute path",
+                    "scope": "machine"
                 }
             }
         },
