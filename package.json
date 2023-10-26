@@ -2,7 +2,7 @@
     "name": "quick-open-folder",
     "displayName": "Quick Open Folder",
     "description": "helps opening folders quickly within vscode",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "engines": {
         "vscode": "^1.83.0"
     },
