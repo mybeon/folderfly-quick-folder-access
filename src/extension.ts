@@ -10,9 +10,7 @@ async function getFolders(folderPath: string): Promise<Items[]> {
     try {
         const folders = await fs.readdir(path.join(folderPath));
         const folderContent = await Promise.all(
-            folders.map(folderName =>
-                fs.readdir(path.join(folderPath, folderName))
-            )
+            folders.map(folderName => fs.readdir(path.join(folderPath, folderName)))
         );
 
         return folders.map((folder, index) => {
@@ -32,8 +30,7 @@ async function getFolders(folderPath: string): Promise<Items[]> {
 }
 
 async function showFolders(folders: Items[]) {
-    if (folders.length === 0)
-        return vscode.window.showErrorMessage("Can't go further !");
+    if (folders.length === 0) return vscode.window.showErrorMessage("Can't go further !");
 
     const folder = await vscode.window.showQuickPick(folders, {
         placeHolder: "choose your folder",
@@ -44,13 +41,9 @@ async function showFolders(folders: Items[]) {
     // vscode.workspace.updateWorkspaceFolders(0, null, { uri: vscode.Uri.file(folder.path) });
 
     if (folder.isProject) {
-        vscode.commands.executeCommand(
-            "vscode.openFolder",
-            vscode.Uri.file(folder.path),
-            {
-                forceReuseWindow: true,
-            }
-        );
+        vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(folder.path), {
+            forceReuseWindow: true,
+        });
     } else {
         const childrenFolders = await getFolders(folder.path);
 
@@ -59,9 +52,7 @@ async function showFolders(folders: Items[]) {
 }
 
 async function getDefaultFolderPath() {
-    return await vscode.workspace
-        .getConfiguration("quickOpenFolder.required")
-        .get("folderPath");
+    return await vscode.workspace.getConfiguration("quickOpenFolder.required").get("folderPath");
 }
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -70,9 +61,7 @@ export async function activate(context: vscode.ExtensionContext) {
     let rootFolders: Items[] = [];
 
     vscode.workspace.onDidChangeConfiguration(async event => {
-        const affected = event.affectsConfiguration(
-            "quickOpenFolder.required.folderPath"
-        );
+        const affected = event.affectsConfiguration("quickOpenFolder.required.folderPath");
 
         if (affected) {
             const updatedDefaultFolderPath = await getDefaultFolderPath();
@@ -96,9 +85,33 @@ export async function activate(context: vscode.ExtensionContext) {
                 vscode.window
                     .showInformationMessage(
                         "You have to configure the default path to a valid path",
+                        "Choose default folder",
                         "go to settings"
                     )
-                    .then(selection => {
+                    .then(async selection => {
+                        if (selection === "Choose default folder") {
+                            const selectFolder = await vscode.window.showOpenDialog({
+                                canSelectFiles: false,
+                                canSelectFolders: true,
+                                canSelectMany: false,
+                                title: "Select folder",
+                            });
+
+                            if (selectFolder?.length) {
+                                const update = await vscode.workspace
+                                    .getConfiguration("quickOpenFolder.required")
+                                    .update(
+                                        "folderPath",
+                                        selectFolder[0].path,
+                                        vscode.ConfigurationTarget.Global
+                                    );
+
+                                vscode.window.showInformationMessage(
+                                    "The default folder path has been successfully configured."
+                                );
+                            }
+                        }
+
                         if (selection === "go to settings") {
                             vscode.commands.executeCommand(
                                 "workbench.action.openSettings",
