@@ -1,59 +1,10 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as fs from "fs/promises";
-import * as path from "path";
 import * as vscode from "vscode";
-
-type Items = vscode.QuickPickItem & { isProject: boolean; path: string };
-
-async function getFolders(folderPath: string): Promise<Items[]> {
-    try {
-        const folders = await fs.readdir(path.join(folderPath));
-        const folderContent = await Promise.all(
-            folders.map(folderName => fs.readdir(path.join(folderPath, folderName)))
-        );
-
-        return folders.map((folder, index) => {
-            const isProject = folderContent[index].includes(".git");
-            return {
-                label: folder,
-                iconPath: isProject
-                    ? new vscode.ThemeIcon("source-control")
-                    : vscode.ThemeIcon.Folder,
-                path: path.join(folderPath, folder),
-                isProject,
-            };
-        });
-    } catch (e) {
-        return [];
-    }
-}
-
-async function showFolders(folders: Items[]) {
-    if (folders.length === 0) return vscode.window.showErrorMessage("Can't go further !");
-
-    const folder = await vscode.window.showQuickPick(folders, {
-        placeHolder: "choose your folder",
-    });
-
-    if (typeof folder === "undefined") return;
-
-    // vscode.workspace.updateWorkspaceFolders(0, null, { uri: vscode.Uri.file(folder.path) });
-
-    if (folder.isProject) {
-        vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(folder.path), {
-            forceReuseWindow: true,
-        });
-    } else {
-        const childrenFolders = await getFolders(folder.path);
-
-        showFolders(childrenFolders);
-    }
-}
-
-async function getDefaultFolderPath() {
-    return await vscode.workspace.getConfiguration("quickOpenFolder.required").get("folderPath");
-}
+import quickOpenFolder from "./commands/quickOpenFolder";
+import type { Items } from "./utils/folders";
+import { getFolders } from "./utils/folders";
+import getDefaultFolderPath from "./utils/getDefaultFolderPath";
 
 export async function activate(context: vscode.ExtensionContext) {
     const defaultFolderPath = await getDefaultFolderPath();
@@ -65,63 +16,15 @@ export async function activate(context: vscode.ExtensionContext) {
 
         if (affected) {
             const updatedDefaultFolderPath = await getDefaultFolderPath();
-
-            if (typeof updatedDefaultFolderPath === "string") {
-                rootFolders = await getFolders(updatedDefaultFolderPath);
-            }
+            rootFolders = await getFolders(updatedDefaultFolderPath);
         }
     });
 
-    if (typeof defaultFolderPath === "string") {
-        rootFolders = await getFolders(defaultFolderPath);
-    }
+    rootFolders = await getFolders(defaultFolderPath);
 
-    let disposable = vscode.commands.registerCommand(
-        "quick-open-folder.quickOpenFolder",
-        async () => {
-            if (rootFolders.length > 0) {
-                await showFolders(rootFolders);
-            } else {
-                vscode.window
-                    .showInformationMessage(
-                        "You have to configure the default path to a valid path",
-                        "Choose default folder",
-                        "go to settings"
-                    )
-                    .then(async selection => {
-                        if (selection === "Choose default folder") {
-                            const selectFolder = await vscode.window.showOpenDialog({
-                                canSelectFiles: false,
-                                canSelectFolders: true,
-                                canSelectMany: false,
-                                title: "Select folder",
-                            });
-
-                            if (selectFolder?.length) {
-                                const update = await vscode.workspace
-                                    .getConfiguration("quickOpenFolder.required")
-                                    .update(
-                                        "folderPath",
-                                        selectFolder[0].path,
-                                        vscode.ConfigurationTarget.Global
-                                    );
-
-                                vscode.window.showInformationMessage(
-                                    "The default folder path has been successfully configured."
-                                );
-                            }
-                        }
-
-                        if (selection === "go to settings") {
-                            vscode.commands.executeCommand(
-                                "workbench.action.openSettings",
-                                "quickOpenFolder.required.folderPath"
-                            );
-                        }
-                    });
-            }
-        }
-    );
+    let disposable = vscode.commands.registerCommand("quick-open-folder.quickOpenFolder", () => {
+        quickOpenFolder(rootFolders);
+    });
 
     context.subscriptions.push(disposable);
 }
