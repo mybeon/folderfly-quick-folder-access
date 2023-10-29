@@ -30,10 +30,11 @@ async function getFolders(folderPath: string): Promise<Items[]> {
 }
 
 async function showFolders(folders: Items[]) {
-    if (folders.length === 0) return vscode.window.showErrorMessage("Can't go further !");
+    if (folders.length === 0)
+        return vscode.window.showErrorMessage("Couldn't find any additional subdirectories !");
 
     const folder = await vscode.window.showQuickPick(folders, {
-        placeHolder: "choose your folder",
+        placeHolder: "Select a folder",
     });
 
     if (typeof folder === "undefined") return;
@@ -82,7 +83,7 @@ export async function activate(context: vscode.ExtensionContext) {
             } else {
                 vscode.window
                     .showInformationMessage(
-                        "You have to configure the default path to a valid path",
+                        "This extension requires a valid path to an existing folder.",
                         "Choose default folder",
                         "go to settings"
                     )

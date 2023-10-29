@@ -20,7 +20,7 @@
                 "quickOpenFolder.required.folderPath": {
                     "title": "Folder path",
                     "type": "string",
-                    "description": "go to the folder containing your project and copy its absolute path",
+                    "description": "You need to navigate to the directory where your Git projects are located and then copy its absolute path.",
                     "scope": "machine"
                 }
             }
