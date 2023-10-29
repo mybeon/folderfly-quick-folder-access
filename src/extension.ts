@@ -38,8 +38,6 @@ async function showFolders(folders: Items[]) {
 
     if (typeof folder === "undefined") return;
 
-    // vscode.workspace.updateWorkspaceFolders(0, null, { uri: vscode.Uri.file(folder.path) });
-
     if (folder.isProject) {
         vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(folder.path), {
             forceReuseWindow: true,
@@ -98,13 +96,16 @@ export async function activate(context: vscode.ExtensionContext) {
                             });
 
                             if (selectFolder?.length) {
-                                const update = await vscode.workspace
+                                let path = selectFolder[0].path;
+
+                                // checks if path starts with /C: type
+                                if (/^\/[a-zA-Z]:/.test(path)) {
+                                    path = path.substring(1);
+                                }
+
+                                await vscode.workspace
                                     .getConfiguration("quickOpenFolder.required")
-                                    .update(
-                                        "folderPath",
-                                        selectFolder[0].path,
-                                        vscode.ConfigurationTarget.Global
-                                    );
+                                    .update("folderPath", path, vscode.ConfigurationTarget.Global);
 
                                 vscode.window.showInformationMessage(
                                     "The default folder path has been successfully configured."
