@@ -13,14 +13,15 @@
         "onStartupFinished"
     ],
     "main": "./out/extension.js",
+    "l10n": "./locales/",
     "contributes": {
         "configuration": {
             "title": "Quick Open Folder",
             "properties": {
                 "quickOpenFolder.required.folderPath": {
-                    "title": "Folder path",
+                    "title": "%quickOpenFolder.required.folderPath.title%",
                     "type": "string",
-                    "description": "You need to navigate to the directory where your Git projects are located and then copy its absolute path.",
+                    "description": "%quickOpenFolder.required.folderPath.description%",
                     "scope": "machine"
                 }
             }

@@ -1,0 +1,9 @@
+{
+    "Couldn't find any additional subdirectories !": "Aucun sous-dossier supplémentaire n'a été trouvé !",
+    "Choose a project": "Choisissez un projet",
+    "This extension requires a valid path to an existing folder.": "Cette extension nécessite un chemin valide vers un dossier existant.",
+    "Choose default folder": "Choisissez le dossier par défaut",
+    "go to settings": "Accéder aux paramètres",
+    "The default folder path has been successfully configured.": "Le chemin du dossier par défaut a été configuré avec succès.",
+    "Select folder": "Sélectionner un dossier"
+}

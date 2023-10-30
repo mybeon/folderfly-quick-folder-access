@@ -31,10 +31,12 @@ async function getFolders(folderPath: string): Promise<Items[]> {
 
 async function showFolders(folders: Items[]) {
     if (folders.length === 0)
-        return vscode.window.showErrorMessage("Couldn't find any additional subdirectories !");
+        return vscode.window.showErrorMessage(
+            vscode.l10n.t("Couldn't find any additional subdirectories !")
+        );
 
     const folder = await vscode.window.showQuickPick(folders, {
-        placeHolder: "Select a folder",
+        placeHolder: vscode.l10n.t("Choose a project"),
     });
 
     if (typeof folder === "undefined") return;
@@ -83,17 +85,19 @@ export async function activate(context: vscode.ExtensionContext) {
             } else {
                 vscode.window
                     .showInformationMessage(
-                        "This extension requires a valid path to an existing folder.",
-                        "Choose default folder",
-                        "go to settings"
+                        vscode.l10n.t(
+                            "This extension requires a valid path to an existing folder."
+                        ),
+                        vscode.l10n.t("Choose default folder"),
+                        vscode.l10n.t("go to settings")
                     )
                     .then(async selection => {
-                        if (selection === "Choose default folder") {
+                        if (selection === vscode.l10n.t("Choose default folder")) {
                             const selectFolder = await vscode.window.showOpenDialog({
                                 canSelectFiles: false,
                                 canSelectFolders: true,
                                 canSelectMany: false,
-                                title: "Select folder",
+                                title: vscode.l10n.t("Select folder"),
                             });
 
                             if (selectFolder?.length) {
@@ -109,12 +113,14 @@ export async function activate(context: vscode.ExtensionContext) {
                                     .update("folderPath", path, vscode.ConfigurationTarget.Global);
 
                                 vscode.window.showInformationMessage(
-                                    "The default folder path has been successfully configured."
+                                    vscode.l10n.t(
+                                        "The default folder path has been successfully configured."
+                                    )
                                 );
                             }
                         }
 
-                        if (selection === "go to settings") {
+                        if (selection === vscode.l10n.t("go to settings")) {
                             vscode.commands.executeCommand(
                                 "workbench.action.openSettings",
                                 "quickOpenFolder.required.folderPath"
