@@ -4,6 +4,21 @@ All notable changes to the "quick-open-folder" extension will be documented in t
 
 ## [Unreleased]
 
+## [0.1.1] - 2023-10-31
+
+### Added
+
+-   localization support.
+-   french language.
+
+### Changed
+
+-   better UI messages.
+
+### Fixed
+
+-   fixed dialog yielded path in Windows OS.
+
 ## [0.1.0] - 2023-10-26
 
 ### Added

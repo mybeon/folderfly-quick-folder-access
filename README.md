@@ -1,71 +1,41 @@
-# quick-open-folder README
+# Quick Open Folder
 
-This is the README for your extension "quick-open-folder". After writing up a brief description, we recommend including the following sections.
+With this extension, you can effortlessly traverse your folders and swiftly open projects within Visual Studio Code, all without the need to exit the application !
+
+It uses Git to differentiate between genuine projects and regular folders, streamlining your workspace management.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+-   **Efficient Folder Navigation**: Seamlessly navigate through your folders within Visual Studio Code.
+-   **Quick Project Access**: Swiftly open your projects without the need to leave the code editor.
+-   **Git Integration**: Utilizes Git to distinguish between actual projects and standard folders.
+-   **Workspace Management**: Streamlines and organizes your workspace effectively.
 
-For example if there is an image subfolder under your extension project workspace:
+## Configuration
 
-\!\[feature X\]\(images/feature-x.png\)
+**Auto-configuration**:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+1. Open the command palette (**Ctrl+Shift+P** on Windows and Linux, **Cmd+Shift+P** on OS X) and search for `Quick Open Folder`.
+1. If you haven't configured the extension yet, you'll be presented with two buttons to set it up :
+    - **Choose folder**: you will be prompted with the default dialog to select to folder of your choice.
+    - **go to settings**: This will direct you to the extension's settings page, where you can proceed with the manual configuration process.
+1. Search for `Quick Open Folder`. Now, the command should display the contents of your designated default folder.
 
-## Requirements
+**Manuel configuration**:
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+1. In the VS Code settings page, search for `quickOpenFolder.required.folderPath`
+1. Copy the absolute path of the folder of your choice.
+1. Open the command palette (**Ctrl+Shift+P** on Windows and Linux, **Cmd+Shift+P** on OS X) and search for `Quick Open Folder`.
+1. Now, the command should display the contents of your designated default folder.
 
 ---
 
-## Following extension guidelines
+**Tips:**
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+-   Keep in mind that projects must include a Git folder for the extension to identify it as a valid project.
+-   If you'd like to bind the main command to a hotkey, open up your keyboard shortcut settings and bind `quick-open-folder.quickOpenFolder` to a custom keybinding.
+-   For optimal use of the extension and to minimize manual navigation, it's advisable to centralize all your projects within a single main folder with subfolders, and then direct the extension to this main folder.
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+## Example
 
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+![example](./images/example.gif)
