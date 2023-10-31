@@ -6,7 +6,7 @@
         "type": "git",
         "url": "https://github.com/mybeon/vscode-quick-open-folder.git"
     },
-    "version": "0.1.0",
+    "version": "0.1.1",
     "engines": {
         "vscode": "^1.83.0"
     },
