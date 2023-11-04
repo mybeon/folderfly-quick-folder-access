@@ -4,6 +4,16 @@ All notable changes to the "quick-open-folder" extension will be documented in t
 
 ## [Unreleased]
 
+## [0.1.2] - 2023-11-04
+
+### Added
+
+-   new icon to the extension.
+
+### Changed
+
+-   change extension name to FolderFly: Quick Folder Access.
+
 ## [0.1.1] - 2023-10-31
 
 ### Added

@@ -3,6 +3,7 @@
     "publisher": "beonma",
     "displayName": "FolderFly: Quick Folder Access",
     "description": "Simplify project navigation in Visual Studio Code.",
+    "icon": "images/icon.jpeg",
     "repository": {
         "type": "git",
         "url": "https://github.com/mybeon/folderfly-quick-folder-access.git"
