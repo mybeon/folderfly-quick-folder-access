@@ -53,7 +53,7 @@ async function showFolders(folders: Items[]) {
 }
 
 async function getDefaultFolderPath() {
-    return await vscode.workspace.getConfiguration("quickOpenFolder.required").get("folderPath");
+    return await vscode.workspace.getConfiguration("folderfly.required").get("folderPath");
 }
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -62,7 +62,7 @@ export async function activate(context: vscode.ExtensionContext) {
     let rootFolders: Items[] = [];
 
     vscode.workspace.onDidChangeConfiguration(async event => {
-        const affected = event.affectsConfiguration("quickOpenFolder.required.folderPath");
+        const affected = event.affectsConfiguration("folderfly.required.folderPath");
 
         if (affected) {
             const updatedDefaultFolderPath = await getDefaultFolderPath();
@@ -77,59 +77,54 @@ export async function activate(context: vscode.ExtensionContext) {
         rootFolders = await getFolders(defaultFolderPath);
     }
 
-    let disposable = vscode.commands.registerCommand(
-        "quick-open-folder.quickOpenFolder",
-        async () => {
-            if (rootFolders.length > 0) {
-                await showFolders(rootFolders);
-            } else {
-                vscode.window
-                    .showInformationMessage(
-                        vscode.l10n.t(
-                            "This extension requires a valid path to an existing folder."
-                        ),
-                        vscode.l10n.t("Choose default folder"),
-                        vscode.l10n.t("go to settings")
-                    )
-                    .then(async selection => {
-                        if (selection === vscode.l10n.t("Choose default folder")) {
-                            const selectFolder = await vscode.window.showOpenDialog({
-                                canSelectFiles: false,
-                                canSelectFolders: true,
-                                canSelectMany: false,
-                                title: vscode.l10n.t("Select folder"),
-                            });
+    let disposable = vscode.commands.registerCommand("folderfly.openFolder", async () => {
+        if (rootFolders.length > 0) {
+            await showFolders(rootFolders);
+        } else {
+            vscode.window
+                .showInformationMessage(
+                    vscode.l10n.t("This extension requires a valid path to an existing folder."),
+                    vscode.l10n.t("Choose default folder"),
+                    vscode.l10n.t("go to settings")
+                )
+                .then(async selection => {
+                    if (selection === vscode.l10n.t("Choose default folder")) {
+                        const selectFolder = await vscode.window.showOpenDialog({
+                            canSelectFiles: false,
+                            canSelectFolders: true,
+                            canSelectMany: false,
+                            title: vscode.l10n.t("Select folder"),
+                        });
 
-                            if (selectFolder?.length) {
-                                let path = selectFolder[0].path;
+                        if (selectFolder?.length) {
+                            let path = selectFolder[0].path;
 
-                                // checks if path starts with /C: type
-                                if (/^\/[a-zA-Z]:/.test(path)) {
-                                    path = path.substring(1);
-                                }
-
-                                await vscode.workspace
-                                    .getConfiguration("quickOpenFolder.required")
-                                    .update("folderPath", path, vscode.ConfigurationTarget.Global);
-
-                                vscode.window.showInformationMessage(
-                                    vscode.l10n.t(
-                                        "The default folder path has been successfully configured."
-                                    )
-                                );
+                            // checks if path starts with /C: type
+                            if (/^\/[a-zA-Z]:/.test(path)) {
+                                path = path.substring(1);
                             }
-                        }
 
-                        if (selection === vscode.l10n.t("go to settings")) {
-                            vscode.commands.executeCommand(
-                                "workbench.action.openSettings",
-                                "quickOpenFolder.required.folderPath"
+                            await vscode.workspace
+                                .getConfiguration("folderfly.required")
+                                .update("folderPath", path, vscode.ConfigurationTarget.Global);
+
+                            vscode.window.showInformationMessage(
+                                vscode.l10n.t(
+                                    "The default folder path has been successfully configured."
+                                )
                             );
                         }
-                    });
-            }
+                    }
+
+                    if (selection === vscode.l10n.t("go to settings")) {
+                        vscode.commands.executeCommand(
+                            "workbench.action.openSettings",
+                            "folderfly.required.folderPath"
+                        );
+                    }
+                });
         }
-    );
+    });
 
     context.subscriptions.push(disposable);
 }

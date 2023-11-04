@@ -1,10 +1,18 @@
 {
-    "name": "quick-open-folder",
-    "displayName": "Quick Open Folder",
+    "name": "folderfly",
+    "publisher": "beonma",
+    "displayName": "FolderFly: Quick Folder Access",
     "description": "Simplify project navigation in Visual Studio Code.",
     "repository": {
         "type": "git",
-        "url": "https://github.com/mybeon/vscode-quick-open-folder.git"
+        "url": "https://github.com/mybeon/folderfly-quick-folder-access.git"
+    },
+    "bugs": {
+        "url": "https://github.com/mybeon/folderfly-quick-folder-access/issues"
+    },
+    "author": {
+        "name": "Hicham El Bouaaichi",
+        "url": "https://github.com/mybeon"
     },
     "version": "0.1.1",
     "engines": {
@@ -13,6 +21,7 @@
     "categories": [
         "Other"
     ],
+    "pricing": "Free",
     "activationEvents": [
         "onStartupFinished"
     ],
@@ -20,26 +29,27 @@
     "l10n": "./locales/",
     "contributes": {
         "configuration": {
-            "title": "Quick Open Folder",
+            "title": "FolderFly",
             "properties": {
-                "quickOpenFolder.required.folderPath": {
-                    "title": "%quickOpenFolder.required.folderPath.title%",
+                "folderfly.required.folderPath": {
+                    "title": "%folderfly.required.folderPath.title%",
                     "type": "string",
-                    "description": "%quickOpenFolder.required.folderPath.description%",
+                    "description": "%folderfly.required.folderPath.description%",
                     "scope": "machine"
                 }
             }
         },
         "commands": [
             {
-                "command": "quick-open-folder.quickOpenFolder",
-                "title": "Quick Open Folder",
-                "category": "Folder"
+                "command": "folderfly.openFolder",
+                "title": "Open Folder",
+                "category": "FolderFly"
             }
         ]
     },
     "scripts": {
         "vscode:package": "vsce package --no-dependencies",
+        "vscode:publish": "vsce publish --no-dependencies",
         "vscode:prepublish": "pnpm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",

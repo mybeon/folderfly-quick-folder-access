@@ -1,4 +1,4 @@
 {
-    "quickOpenFolder.required.folderPath.title": "Chemin du dossier",
-    "quickOpenFolder.required.folderPath.description": "Vous devez accéder au répertoire où se trouvent vos projets Git et copier son chemin absolu."
+    "folderfly.required.folderPath.title": "Chemin du dossier",
+    "folderfly.required.folderPath.description": "Vous devez accéder au répertoire où se trouvent vos projets Git et copier son chemin absolu."
 }

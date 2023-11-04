@@ -1,4 +1,4 @@
 {
-    "quickOpenFolder.required.folderPath.title": "Folder path bro",
-    "quickOpenFolder.required.folderPath.description": "You need to navigate to the directory where your Git projects are located and then copy its absolute path."
+    "folderfly.required.folderPath.title": "Folder path bro",
+    "folderfly.required.folderPath.description": "You need to navigate to the directory where your Git projects are located and then copy its absolute path."
 }
