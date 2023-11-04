@@ -1,10 +1,12 @@
+![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/mybeon/folderfly-quick-folder-access/main?logo=github&label=version&color=green)
+
 # FolderFly: Quick Folder Access
 
 With this extension, you can effortlessly traverse your folders and swiftly open projects within Visual Studio Code, all without the need to exit the application !
 
-![example](./images/example.gif)
-
 It uses Git to differentiate between genuine projects and regular folders, streamlining your workspace management.
+
+![example](./images/example.gif)
 
 ## Features
 
